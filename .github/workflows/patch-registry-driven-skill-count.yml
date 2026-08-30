@@ -1,0 +1,79 @@
+name: One-shot registry-driven Skill count refactor
+
+on:
+  push:
+    branches:
+      - fix/registry-driven-skill-count
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v5
+        with:
+          ref: fix/registry-driven-skill-count
+
+      - name: Apply registry-driven validation refactor
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              target = Path(path)
+              text = target.read_text(encoding="utf-8")
+              if text.count(old) != 1:
+                  raise SystemExit(f"expected exactly one match in {path}: {old!r}")
+              target.write_text(text.replace(old, new, 1), encoding="utf-8")
+
+          replace_once(
+              "scripts/validate_repository.py",
+              '''        if len(self.active) != 12:\n            self.error(f"published active Skill set must contain 12 Skills, found {len(self.active)}")\n''',
+              '''        if not self.active:\n            self.error("skills/registry.yaml must publish at least one active Skill")\n''',
+          )
+
+          replace_once(
+              "scripts/validate.sh",
+              '''"$PYTHON_BIN" "$ROOT_DIR/scripts/validate_repository.py" "$ROOT_DIR"\n\npublished_output=''',
+              '''"$PYTHON_BIN" "$ROOT_DIR/scripts/validate_repository.py" "$ROOT_DIR"\n"$PYTHON_BIN" -m unittest discover -s "$ROOT_DIR/tests" -p 'test_*.py'\n\npublished_output=''',
+          )
+
+          replace_once(
+              "README.md",
+              "## The 12 Skills\n",
+              "## Published Skills\n",
+          )
+          replace_once(
+              "README.md",
+              "仓库保持恰好 12 个顶层 Skill。仓库是发布和验证边界，不是一个必须整体触发的巨大 Skill；每个目录都可以独立调用。",
+              "v0.4.0 当前发布 12 个顶层 Skill；后续发布集合及其数量以 `skills/registry.yaml` 中的 active set 为准，验证、部署和安装不得硬编码固定 Skill 数量。仓库是发布和验证边界，不是一个必须整体触发的巨大 Skill；每个目录都可以独立调用。",
+          )
+
+          replace_once(
+              "CHANGELOG.md",
+              "## Unreleased\n\n",
+              "## Unreleased\n\n### Changed\n\n- Removed the hard-coded 12-Skill publication count from repository validation. Published Skill cardinality is now derived from `skills/registry.yaml`, with a regression test proving that a matching 13-Skill discovered/active set is valid.\n\n",
+          )
+
+          replace_once(
+              "skills/knowledge-compilation/references/skill-candidate-and-promotion.md",
+              "Validation must fail when a non-active directory appears under an automatically\ndiscovered active path instead of silently treating it as published. Deployment\nand smoke tests must use the same published registry-driven set.\n",
+              "Validation must fail when a non-active directory appears under an automatically\ndiscovered active path instead of silently treating it as published. Deployment\nand smoke tests must use the same published registry-driven set. Membership and\ncardinality must be derived from that set; validators and installers must not\nhard-code the number of Skills in the current release.\n",
+          )
+
+          test_path = Path("tests/test_registry_driven_skill_count.py")
+          test_path.write_text('''from __future__ import annotations\n\nimport sys\nimport tempfile\nimport unittest\nfrom pathlib import Path\n\nimport yaml\n\nROOT = Path(__file__).resolve().parents[1]\nsys.path.insert(0, str(ROOT / "scripts"))\n\nfrom validate_repository import RepositoryValidator  # noqa: E402\n\n\ndef write_registry(root: Path, names: list[str]) -> None:\n    skills_root = root / "skills"\n    skills_root.mkdir(parents=True, exist_ok=True)\n    entries = []\n    for name in names:\n        skill_dir = skills_root / name\n        skill_dir.mkdir()\n        (skill_dir / "SKILL.md").write_text("---\\nname: " + name + "\\n---\\n", encoding="utf-8")\n        entries.append(\n            {\n                "name": name,\n                "status": "active",\n                "version": "0.4.0",\n                "scope": "global",\n                "allow_implicit_invocation": True,\n                "minimum_eval_cases": 5,\n            }\n        )\n    (skills_root / "registry.yaml").write_text(\n        yaml.safe_dump({"schema_version": "1", "skills": entries}, sort_keys=False),\n        encoding="utf-8",\n    )\n\n\nclass RegistryDrivenSkillCountTest(unittest.TestCase):\n    def test_matching_thirteen_skill_set_is_valid(self) -> None:\n        with tempfile.TemporaryDirectory() as tmp:\n            root = Path(tmp)\n            names = [f"skill-{index:02d}" for index in range(13)]\n            write_registry(root, names)\n            validator = RepositoryValidator(root)\n            validator.version = "0.4.0"\n\n            validator.validate_publication_registry()\n\n            self.assertEqual([], validator.errors)\n            self.assertEqual(sorted(names), validator.active)\n            self.assertEqual(sorted(names), validator.discovered)\n\n    def test_empty_active_set_is_rejected(self) -> None:\n        with tempfile.TemporaryDirectory() as tmp:\n            root = Path(tmp)\n            skills_root = root / "skills"\n            skills_root.mkdir(parents=True)\n            (skills_root / "registry.yaml").write_text(\n                yaml.safe_dump({"schema_version": "1", "skills": []}, sort_keys=False),\n                encoding="utf-8",\n            )\n            validator = RepositoryValidator(root)\n            validator.version = "0.4.0"\n\n            validator.validate_publication_registry()\n\n            self.assertIn(\n                "skills/registry.yaml must publish at least one active Skill",\n                validator.errors,\n            )\n\n\nif __name__ == "__main__":\n    unittest.main()\n''', encoding="utf-8")
+          PY
+
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/validate_repository.py scripts/validate.sh README.md CHANGELOG.md \
+            skills/knowledge-compilation/references/skill-candidate-and-promotion.md \
+            tests/test_registry_driven_skill_count.py
+          git commit -m "refactor: derive published skill count from registry"
+          git push origin HEAD:fix/registry-driven-skill-count
