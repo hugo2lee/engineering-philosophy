@@ -18,3 +18,12 @@ v0.2.0 的格式和分发验证参考了以下公开项目，仅使用其公开�
 - [Agent Skills specification](https://github.com/agentskills/agentskills/blob/main/docs/specification.mdx)：`SKILL.md` frontmatter、目录结构和 progressive disclosure 约定。该规范项目的相关参考实现采用 Apache-2.0 许可证。
 - [skills-ref](https://github.com/agentskills/agentskills/tree/main/skills-ref)：标准级 frontmatter validator 的参考实现；其 README 明确说明它是 demonstration/reference library。本仓库只把可安装的 `skills-ref` 命令作为验证工具使用，不把它的实现代码纳入源码。
 - [vercel-labs/skills](https://github.com/vercel-labs/skills)：`npx skills` 的公开 CLI 命令和 Agent 目录兼容性说明。该项目采用 MIT 许可证；本仓库没有复制其实现代码。
+
+## ChatGPT Web workflow design references
+
+`chatgpt-plan-execute` 为本仓库独立编写的 workflow Skill。设计时参考了以下公开项目中已经验证过的交接思路，但没有复制其 Skill 正文、脚本或专有资产：
+
+- [Shuvomoy/AutoOPT](https://github.com/Shuvomoy/AutoOPT) 的 `chatgpt-pro-handoff` / `chatgpt-pro-session`：参考 context packaging、manifest、response import 与 persistent conversation/session 的职责拆分。
+- [Wangnov/chatgpt-skill](https://github.com/Wangnov/chatgpt-skill) 的 `codex-chatgpt-skill`：参考通过 Codex Chrome Extension 复用用户已认证的 ChatGPT Web / Chrome session，并优先通过可见网页交互完成 handoff。
+
+本仓库在这些公开思路之上重新定义了自己的边界：精确文件选择、secret fail-closed、显式上传授权、repository facts 优先、ChatGPT 作为 planner/reviewer、Codex 作为 explorer/executor/verifier，以及本地可执行验证作为完成条件。

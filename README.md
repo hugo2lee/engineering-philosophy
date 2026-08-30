@@ -99,6 +99,12 @@ npx skills@latest add hugo2lee/engineering-philosophy \
   --skill architecture-boundaries \
   --global \
   --agent codex
+
+# 只给 Codex 安装 ChatGPT Web 规划/执行 workflow
+npx skills@latest add hugo2lee/engineering-philosophy \
+  --skill chatgpt-plan-execute \
+  --global \
+  --agent codex
 ```
 
 `npx skills` 会自动发现仓库中的 `skills/<name>/SKILL.md`，因此不需要创建或发布 npm 包。安装后可以使用 `npx skills ls -g` 查看，使用 `npx skills update -g -y` 更新已安装 Skill。
@@ -117,7 +123,7 @@ npx skills@latest add hugo2lee/engineering-philosophy \
 `status: active` 的 Published Active Skill Set，以及安装器实际输出的 Installed
 Skill Set。候选 Skill 必须留在自动发现的 active path 之外，直到通过晋升门禁。
 
-v0.4.0 当前发布 12 个顶层 Skill；后续发布集合及其数量以 `skills/registry.yaml` 中的 active set 为准，验证、部署和安装不得硬编码固定 Skill 数量。仓库是发布和验证边界，不是一个必须整体触发的巨大 Skill；每个目录都可以独立调用。
+`v0.4.0` 稳定版本发布了 12 个顶层 Skill；当前 `Unreleased` 工作树新增 `chatgpt-plan-execute`，因此 active registry set 为 13 个。任意 ref 的实际发布集合及数量均以 `skills/registry.yaml` 中的 active set 为准，验证、部署和安装不得硬编码固定 Skill 数量。仓库是发布和验证边界，不是一个必须整体触发的巨大 Skill；每个目录都可以独立调用。
 
 - `engineering-philosophy`：总纲、规则等级、全局/项目边界、生命周期和路由。显式入口，不作为所有请求的必经层。
 - `requirement-engineering`：Requirement Contract、现有需求/能力/发布行为对照、冲突分类和用户决策门。
@@ -131,8 +137,9 @@ v0.4.0 当前发布 12 个顶层 Skill；后续发布集合及其数量以 `skil
 - `git-workflow-and-versioning`：分支、原子提交、版本、CHANGELOG、Tag 和发布可追溯性。
 - `ci-cd-and-automation`：测试/构建质量闸、artifact 身份、部署健康、停止/回滚和 Gate 4。
 - `knowledge-compilation`：仓库证据发现、artifact 分类、知识对账、provenance、Skill candidate、验证、注册和退役。它不替代普通功能开发、调试、评审或发布 Skill。
+- `chatgpt-plan-execute`：显式 Codex workflow；先从真实仓库编译最小可审计上下文，通过 Codex Chrome Extension 交给 ChatGPT Web 做规划/评审，再由 Codex 校验假设、执行并本地验证。普通编码、规划或评审请求不得隐式上传源码。
 
-v0.4.0 仍不创建 C++ Skill，也不创建独立的安全、可观测性或 ADR Skill。代码示例和语言落地参考集中在 `architecture-boundaries` 下的 Go 与 C++ 参考文件中，不把项目版本或公司约束写进全局 Skill。
+`v0.4.0` 稳定版仍不创建 C++ Skill，也不创建独立的安全、可观测性或 ADR Skill。代码示例和语言落地参考集中在 `architecture-boundaries` 下的 Go 与 C++ 参考文件中，不把项目版本或公司约束写进全局 Skill。
 
 ## Requirement Reconciliation
 
@@ -195,13 +202,14 @@ Service 测试不能证明真实数据库 adapter；mock 的调用次数不能�
 | branch、commit、version、tag、CHANGELOG | `git-workflow-and-versioning` | 发布自动化时协作 CI/CD |
 | pipeline、artifact、部署健康、Gate 4 | `ci-cd-and-automation` | 失败时转 debugging |
 | 仓库变化需要更新 Agent 知识、分类 artifact、判断是否生成 Skill | `knowledge-compilation` | 发现技术边界时协作 architecture-boundaries；发现业务不变量时协作 ddd-lite |
+| 显式要求 Codex 将最小本地仓库上下文交给 ChatGPT Web 做规划/评审，再回来执行 | `chatgpt-plan-execute` | ChatGPT 返回后继续路由到拥有实际工程决策的 focused Skill |
 | 项目知识晋升为跨项目/全局规则 | `engineering-philosophy` | `knowledge-compilation` 提供 provenance 和 eval 证据 |
 
-完整的 primary、secondary、forbidden 和升级条件见 [routing-matrix.md](skills/engineering-philosophy/references/routing-matrix.md)。在 Codex 中可以显式调用，例如 `$architecture-boundaries`、`$ddd-lite`、`$requirement-engineering`；其他 Agent 可以根据 description 自动触发 specialist Skill。
+完整的 primary、secondary、forbidden 和升级条件见 [routing-matrix.md](skills/engineering-philosophy/references/routing-matrix.md)。在 Codex 中可以显式调用，例如 `$architecture-boundaries`、`$ddd-lite`、`$requirement-engineering`、`$chatgpt-plan-execute`；其他 Agent 可以根据 description 自动触发 specialist Skill。`chatgpt-plan-execute` 是例外：它跨越源码外发边界，因此必须显式调用，不能根据普通编码请求自动触发。
 
 ## Migrating from v0.2.x
 
-v0.3.0 只重命名两个 Skill；v0.4.0 在此基础上新增 `knowledge-compilation`，总数为 12：
+v0.3.0 只重命名两个 Skill；v0.4.0 在此基础上新增 `knowledge-compilation`，稳定版本总数为 12。当前 `Unreleased` 的 `chatgpt-plan-execute` 不改变这个历史迁移事实：
 
 | v0.2.x | v0.3.0 |
 | --- | --- |
@@ -236,7 +244,7 @@ scripts/deploy.sh --dry-run
 git diff --check
 ```
 
-验证器会读取 `skills/registry.yaml`，动态检查 12 个 published Skill 的标准 frontmatter、`agents/openai.yaml`、metadata version、references 链接、独立 eval、routing eval、30 个 feature lifecycle cases、31 个 knowledge lifecycle cases、registry 一致性、生成 Skill sidecar、JSON Schema fixtures 和文档版本一致性。PyYAML、`jsonschema>=4,<5` 与 Agent Skills reference validator 是验证依赖；例如：
+验证器会读取 `skills/registry.yaml`，动态检查 active published Skill set 的标准 frontmatter、`agents/openai.yaml`、metadata version、references 链接、独立 eval、routing eval、30 个 feature lifecycle cases、31 个 knowledge lifecycle cases、registry 一致性、生成 Skill sidecar、JSON Schema fixtures 和文档版本一致性。PyYAML、`jsonschema>=4,<5` 与 Agent Skills reference validator 是验证依赖；例如：
 
 ```sh
 python3 -m venv .venv
