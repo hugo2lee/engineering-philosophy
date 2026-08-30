@@ -73,3 +73,9 @@ skills:
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 8
+  - name: chatgpt-plan-execute
+    status: active
+    version: "0.4.0"
+    scope: global
+    allow_implicit_invocation: false
+    minimum_eval_cases: 8
