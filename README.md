@@ -111,13 +111,13 @@ npx skills@latest add hugo2lee/engineering-philosophy \
 
 原生 Agent 目录和 `npx skills` 的安装目标是两个概念。当前实测 `npx skills@latest` 在同时指定 `--agent codex --agent cline` 时使用共享的 `~/.agents/skills`，指定 OpenClaw 时使用 `~/.openclaw/skills`；`scripts/smoke-test-npx.sh` 有意验证这一 CLI 行为。维护者的 `scripts/deploy.sh` 是独立的复制部署辅助工具，默认按上面的原生目录分别写入，也可以通过参数传入临时目标。实际安装后请用 `npx skills ls -g` 和对应 Agent 文档确认最终路径。
 
-## The 12 Skills
+## Published Skills
 
 维护者验证时区分三个集合：filesystem 中的 Discovered Skill Set、registry 中
 `status: active` 的 Published Active Skill Set，以及安装器实际输出的 Installed
 Skill Set。候选 Skill 必须留在自动发现的 active path 之外，直到通过晋升门禁。
 
-仓库保持恰好 12 个顶层 Skill。仓库是发布和验证边界，不是一个必须整体触发的巨大 Skill；每个目录都可以独立调用。
+v0.4.0 当前发布 12 个顶层 Skill；后续发布集合及其数量以 `skills/registry.yaml` 中的 active set 为准，验证、部署和安装不得硬编码固定 Skill 数量。仓库是发布和验证边界，不是一个必须整体触发的巨大 Skill；每个目录都可以独立调用。
 
 - `engineering-philosophy`：总纲、规则等级、全局/项目边界、生命周期和路由。显式入口，不作为所有请求的必经层。
 - `requirement-engineering`：Requirement Contract、现有需求/能力/发布行为对照、冲突分类和用户决策门。

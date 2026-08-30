@@ -37,7 +37,9 @@ Installed Skill Set        = the result emitted by an installer
 
 Validation must fail when a non-active directory appears under an automatically
 discovered active path instead of silently treating it as published. Deployment
-and smoke tests must use the same published registry-driven set.
+and smoke tests must use the same published registry-driven set. Membership and
+cardinality must be derived from that set; validators and installers must not
+hard-code the number of Skills in the current release.
 
 ## Lifecycle
 
