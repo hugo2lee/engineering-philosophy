@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+- Added `chatgpt-plan-execute`, an explicit Codex workflow for repository reconnaissance, exact auditable context packaging, fail-closed secret filtering, ChatGPT Web planning/review through the Codex Chrome Extension, repository-fact reconciliation, local execution, and verification.
+- Added eight `chatgpt-plan-execute` routing/eval cases plus executable handoff tests covering exact file selection, secret blocking, path traversal, prepare-only mode, ChatGPT session URLs, and marker-bounded response import.
+
 ### Changed
 
 - Removed the hard-coded 12-Skill publication count from repository validation. Published Skill cardinality is now derived from `skills/registry.yaml`, with a regression test proving that a matching 13-Skill discovered/active set is valid.
