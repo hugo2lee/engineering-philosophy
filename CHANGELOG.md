@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Removed the hard-coded 12-Skill publication count from repository validation. Published Skill cardinality is now derived from `skills/registry.yaml`, with a regression test proving that a matching 13-Skill discovered/active set is valid.
+
 ## v0.4.0 - Continuous Knowledge Compilation
 
 ### Added

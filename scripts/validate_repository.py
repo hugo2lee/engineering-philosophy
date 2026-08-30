@@ -197,8 +197,8 @@ class RepositoryValidator:
                 "discovered Skill set does not equal active registry Skill set: "
                 f"discovered={self.discovered!r}, active={self.active!r}"
             )
-        if len(self.active) != 12:
-            self.error(f"published active Skill set must contain 12 Skills, found {len(self.active)}")
+        if not self.active:
+            self.error("skills/registry.yaml must publish at least one active Skill")
 
     def validate_skills(self) -> None:
         for skill in self.active:

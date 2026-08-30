@@ -34,6 +34,7 @@ if [[ -z "$STANDARDS_VALIDATOR" ]]; then
 fi
 
 "$PYTHON_BIN" "$ROOT_DIR/scripts/validate_repository.py" "$ROOT_DIR"
+"$PYTHON_BIN" -m unittest discover -s "$ROOT_DIR/tests" -p 'test_*.py'
 
 published_output="$("$PYTHON_BIN" "$ROOT_DIR/scripts/skill-set.py" --mode published)"
 SKILLS=()
