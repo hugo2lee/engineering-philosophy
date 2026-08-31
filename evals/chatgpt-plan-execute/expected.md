@@ -2,7 +2,7 @@
 
 ## CPE-001 Explicit handoff request
 
-Use `chatgpt-plan-execute`: inspect repository facts first, select exact relevant files, create and inspect a safe manifest, use the Codex Chrome Extension for ChatGPT Web, import the marked plan, reconcile assumptions, then execute and verify locally.
+Use `chatgpt-plan-execute`: inspect repository facts first, select exact relevant files, create and inspect a safe manifest, use the Codex built-in browser by default for ChatGPT Web, import the marked plan, reconcile assumptions, then execute and verify locally.
 
 ## CPE-002 Ordinary coding request
 
@@ -22,12 +22,20 @@ Repository facts win. Adapt the plan to reuse the existing `EventPublisher` owne
 
 ## CPE-006 Persistent review
 
-Reuse the saved ChatGPT conversation URL, provide current diff and test evidence, avoid reuploading unchanged original context, import findings, and validate them locally before edits.
+Reuse the saved ChatGPT conversation URL and recorded browser transport, provide current diff and test evidence, avoid reuploading unchanged original context, import findings, and validate them locally before edits.
 
-## CPE-007 Chrome unavailable
+## CPE-007 Built-in browser cannot attach local bundle
 
-Stop for user action. Do not fall back to a generic browser, cookie export, undocumented APIs, or another automation path.
+Stop for user takeover at the attachment boundary. Do not paste unreviewed source, export cookies, use undocumented APIs, or pretend the Chrome Extension can upload the local archive when it lacks that permission. A transport switch is allowed only if the other supported Codex transport can actually preserve the same manifest-reviewed upload boundary.
 
 ## CPE-008 Stale context after implementation
 
 Check context freshness. Do not imply ChatGPT sees the current file; summarize the change or prepare a narrowly refreshed bundle if exact current content is needed.
+
+## CPE-009 Existing Chrome session explicitly required
+
+Use `codex-chrome-extension` to reuse that Chrome profile/session, provided the required local attachment can be completed under the same consent and manifest rules. Record the actual transport in `session.json`.
+
+## CPE-010 Default browser transport
+
+Prefer `codex-in-app`. The Chrome Extension is a conditional adapter for an existing Chrome session, not the default protocol and not a reason to bypass local-file upload controls.

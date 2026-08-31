@@ -1,6 +1,6 @@
 ---
 name: chatgpt-plan-execute
-description: Orchestrate an explicit Codex workflow that inspects a local repository, packages a minimal auditable context bundle, delegates architecture reasoning and implementation planning or review to ChatGPT Web through the Codex Chrome Extension, validates the returned plan against repository facts, then executes and verifies it locally. Use only when the user explicitly asks Codex to hand off repository context to ChatGPT Web; never upload secrets or infer consent from an ordinary coding request.
+description: Orchestrate an explicit Codex workflow that inspects a local repository, packages a minimal auditable context bundle, delegates architecture reasoning and implementation planning or review to ChatGPT Web using the Codex built-in browser by default or the Codex Chrome Extension when an existing Chrome session is required, validates the returned plan against repository facts, then executes and verifies it locally. Use only when the user explicitly asks Codex to hand off repository context to ChatGPT Web; never upload secrets or infer consent from an ordinary coding request.
 license: AGPL-3.0-only
 metadata:
   version: "0.4.0"
@@ -30,6 +30,7 @@ Codex
   = repository explorer
   = repository source-of-truth keeper
   = context compiler
+  = browser-transport selector
   = implementation executor
   = local verifier
 
@@ -73,26 +74,33 @@ The packager uses exact workspace-relative file selection only. There is no impl
 
 Inspect `.chatgpt_handoffs/<id>/manifest.json` before browser submission. The manifest is the auditable statement of what will leave the local workspace.
 
-Read [handoff-contract.md](references/handoff-contract.md) for state, safety, and response-marker rules.
+Read [handoff-contract.md](references/handoff-contract.md) for state, safety, browser-transport, and response-marker rules.
 
-### 3. Submit through the user's Chrome session
+### 3. Choose a browser transport and submit
 
-Before browser actions, read and follow the Chrome Skill available in the current Codex runtime. Use the Codex Chrome Extension backend and the user's existing Chrome profile/login state.
+Prefer the **Codex built-in browser** for the normal handoff. It keeps the browser interaction inside the Codex desktop workflow and is the first transport to try when the handoff needs to attach the locally generated `context-*.zip`.
 
-Do not fall back to the generic in-app browser, an independent Playwright/Puppeteer profile, shell browser automation, cookie/session export, undocumented ChatGPT APIs, AppleScript, or Computer Use to bypass the Chrome Extension path.
+Use the **Codex Chrome Extension** when the user explicitly wants the existing Chrome profile/session, an already-open ChatGPT conversation in Chrome, or another Chrome-specific capability. The extension is a supported transport, not the protocol itself.
 
-Reuse an existing `chatgpt.com` tab when appropriate or open a new one. If the user requested a specific model or reasoning mode, select and verify the visible requested option. Otherwise keep the current visible ChatGPT selection and record what was actually used; do not silently substitute a different requested model/mode.
+Do not use an independent Playwright/Puppeteer profile, shell browser automation, cookie/session export, undocumented ChatGPT APIs, AppleScript, Computer Use, or another browser path to bypass the selected transport's security or upload controls.
 
-Attach the generated `context-*.zip`, paste `prompt.md`, and submit only when the manifest is `ready` and the invocation/consent conditions above are satisfied. If login, CAPTCHA, OAuth, model selection, file upload, or browser control becomes ambiguous, stop for user takeover rather than bypassing it.
+Open or reuse `chatgpt.com` in the selected transport. If the user requested a specific model or reasoning mode, select and verify the visible requested option. Otherwise keep the current visible ChatGPT selection and record what was actually used; do not silently substitute a different requested model/mode.
 
-After submission, record the conversation URL:
+Attach the generated `context-*.zip`, paste `prompt.md`, and submit only when the manifest is `ready` and the invocation/consent conditions above are satisfied. If the selected transport cannot access the local attachment, the file picker requires user confirmation, or login/CAPTCHA/OAuth/model selection/browser control becomes ambiguous, stop for user takeover. Do not compensate by pasting unreviewed source, exporting credentials, or using an undocumented upload path.
+
+A transport switch is allowed only between the two supported Codex transports and only when it preserves the user's consent and can satisfy the same manifest-reviewed upload boundary. Do not assume the Chrome Extension can upload local files merely because it can control an authenticated Chrome tab.
+
+After submission, record the conversation URL and transport:
 
 ```bash
 python3 <skill-dir>/scripts/prepare_handoff.py record-session \
   --handoff-dir .chatgpt_handoffs/<id> \
   --chat-url "https://chatgpt.com/c/..." \
-  --actual-mode "<visible model/mode>"
+  --actual-mode "<visible model/mode>" \
+  --browser-transport codex-in-app
 ```
+
+Use `--browser-transport codex-chrome-extension` when that transport was actually used.
 
 ### 4. Import the planning response
 
@@ -136,9 +144,9 @@ ChatGPT does not declare implementation complete. Local executable evidence does
 
 ### 7. Optional review loop
 
-When useful, reopen the saved ChatGPT conversation URL and send a follow-up containing the implemented diff summary, test/build evidence, and any plan deviations. Do not reupload unchanged original context. If relevant source files have changed materially and the review depends on their current contents, refresh only those files into a new context bundle or explicitly tell ChatGPT which earlier context is stale.
+When useful, reopen the saved ChatGPT conversation URL using the browser transport recorded in `session.json` and send a follow-up containing the implemented diff summary, test/build evidence, and any plan deviations. Do not reupload unchanged original context. If relevant source files have changed materially and the review depends on their current contents, refresh only those files into a new context bundle or explicitly tell ChatGPT which earlier context is stale.
 
-Import review responses with `--kind review`, then validate findings locally before applying them.
+If the recorded transport is unavailable, a switch to the other supported Codex transport requires the same upload/consent checks as the initial handoff. Import review responses with `--kind review`, then validate findings locally before applying them.
 
 Read [review-loop.md](references/review-loop.md) for context-freshness and stop rules.
 
@@ -146,7 +154,8 @@ Read [review-loop.md](references/review-loop.md) for context-freshness and stop 
 
 Stop and report rather than silently degrading when:
 
-- Chrome Extension access is unavailable or ambiguous;
+- neither supported Codex browser transport can safely perform the required ChatGPT interaction;
+- local file attachment is unavailable or ambiguous and requires user takeover;
 - ChatGPT login/CAPTCHA/OAuth requires user action;
 - a requested model or mode cannot be selected or verified;
 - manifest status is `blocked`;
@@ -172,5 +181,7 @@ A successful run leaves auditable local evidence:
   raw_response.md
   response.md
 ```
+
+`session.json` records the ChatGPT conversation URL, visible model/mode, and the browser transport used for the submitted handoff.
 
 The workflow is complete only when the implementation has been verified locally, not merely when ChatGPT returns a plan.

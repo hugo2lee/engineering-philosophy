@@ -4,12 +4,13 @@
 
 ### Added
 
-- Added `chatgpt-plan-execute`, an explicit Codex workflow for repository reconnaissance, exact auditable context packaging, fail-closed secret filtering, ChatGPT Web planning/review through the Codex Chrome Extension, repository-fact reconciliation, local execution, and verification.
-- Added eight `chatgpt-plan-execute` routing/eval cases plus executable handoff tests covering exact file selection, secret blocking, path traversal, prepare-only mode, ChatGPT session URLs, and marker-bounded response import.
+- Added `chatgpt-plan-execute`, an explicit Codex workflow for repository reconnaissance, exact auditable context packaging, fail-closed secret filtering, ChatGPT Web planning/review through an explicit Codex browser transport, repository-fact reconciliation, local execution, and verification.
+- Added ten `chatgpt-plan-execute` routing/eval cases plus executable handoff tests covering exact file selection, secret blocking, path traversal, prepare-only mode, ChatGPT session URLs, browser transport recording, and marker-bounded response import.
 
 ### Changed
 
 - Removed the hard-coded 12-Skill publication count from repository validation. Published Skill cardinality is now derived from `skills/registry.yaml`, with a regression test proving that a matching 13-Skill discovered/active set is valid.
+- Made the Codex built-in browser the default ChatGPT Web transport for `chatgpt-plan-execute`, with the Codex Chrome Extension retained as a conditional adapter when an existing Chrome profile/session is explicitly required. `session.json` now records the actual browser transport, and unavailable local attachment stops for user takeover instead of falling back to undocumented upload paths.
 
 ## v0.4.0 - Continuous Knowledge Compilation
 

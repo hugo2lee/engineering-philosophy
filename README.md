@@ -107,6 +107,8 @@ npx skills@latest add hugo2lee/engineering-philosophy \
   --agent codex
 ```
 
+`chatgpt-plan-execute` 默认使用 Codex 内置浏览器完成 ChatGPT Web handoff；只有需要复用现有 Chrome profile/session、已打开的 ChatGPT 对话或其他 Chrome 特有状态时才使用 Codex Chrome Extension。任一 transport 无法安全附加 manifest-reviewed 本地 bundle 时，应停在上传边界让用户接管，而不是绕过文件权限或上传控制。
+
 `npx skills` 会自动发现仓库中的 `skills/<name>/SKILL.md`，因此不需要创建或发布 npm 包。安装后可以使用 `npx skills ls -g` 查看，使用 `npx skills update -g -y` 更新已安装 Skill。
 
 不同 Agent 的原生/默认全局目录如下：
@@ -137,7 +139,7 @@ Skill Set。候选 Skill 必须留在自动发现的 active path 之外，直到
 - `git-workflow-and-versioning`：分支、原子提交、版本、CHANGELOG、Tag 和发布可追溯性。
 - `ci-cd-and-automation`：测试/构建质量闸、artifact 身份、部署健康、停止/回滚和 Gate 4。
 - `knowledge-compilation`：仓库证据发现、artifact 分类、知识对账、provenance、Skill candidate、验证、注册和退役。它不替代普通功能开发、调试、评审或发布 Skill。
-- `chatgpt-plan-execute`：显式 Codex workflow；先从真实仓库编译最小可审计上下文，通过 Codex Chrome Extension 交给 ChatGPT Web 做规划/评审，再由 Codex 校验假设、执行并本地验证。普通编码、规划或评审请求不得隐式上传源码。
+- `chatgpt-plan-execute`：显式 Codex workflow；先从真实仓库编译最小可审计上下文，默认通过 Codex 内置浏览器交给 ChatGPT Web 做规划/评审；只有需要复用现有 Chrome profile/session 时才使用 Codex Chrome Extension。若浏览器无法安全附加本地 bundle，则停在上传边界让用户接管。之后由 Codex 校验假设、执行并本地验证。普通编码、规划或评审请求不得隐式上传源码。
 
 `v0.4.0` 稳定版仍不创建 C++ Skill，也不创建独立的安全、可观测性或 ADR Skill。代码示例和语言落地参考集中在 `architecture-boundaries` 下的 Go 与 C++ 参考文件中，不把项目版本或公司约束写进全局 Skill。
 
