@@ -3,7 +3,7 @@ name: engineering-philosophy
 description: Govern evidence-driven feature changes, reconcile requirements with released behavior, route decisions to the smallest focused Skill, and keep global principles separate from project rules. Use as an explicit governance entrypoint, not as a mandatory prelude for every task.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "engineering-governance"
 ---
 

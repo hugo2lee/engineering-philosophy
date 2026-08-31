@@ -3,7 +3,7 @@ name: change-planning
 description: Plan an approved software change from repository evidence, existing capabilities, business changes, architecture pressure, dependencies, risks, vertical slices, and verification. Do not invent services or boundaries before inspecting the system.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "planning"
 ---
 

@@ -2,7 +2,9 @@
 
 ## Reuse the same conversation
 
-After the initial plan, keep the saved ChatGPT conversation URL when the user wants architecture or implementation review. Reopen that conversation through the Codex Chrome Extension so ChatGPT can use the earlier planning context.
+After the initial plan, keep the saved ChatGPT conversation URL when the user wants architecture or implementation review. Reopen that conversation using the browser transport recorded in `session.json` so ChatGPT can use the earlier planning context.
+
+If the recorded transport is unavailable, switch only to the other supported Codex browser transport and only when the same consent and attachment boundary can be preserved. Do not use an unrelated browser path or export browser credentials to recover the session.
 
 Do not automatically reupload the original archive on every turn.
 
@@ -16,6 +18,8 @@ Before review, compare the current files relevant to the review with the hashes 
 - unrelated changed file: do not refresh merely because the repository changed somewhere.
 
 Never imply that ChatGPT sees the current working tree unless the relevant current state was actually supplied.
+
+If a refreshed bundle must be attached and the selected browser transport cannot access the local file, stop for user takeover. Do not paste unreviewed repository contents or bypass browser upload controls.
 
 ## Review payload
 

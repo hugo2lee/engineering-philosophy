@@ -24,10 +24,18 @@ ChatGPT proposes a new `RuleEventBus` interface, but Codex finds an existing con
 
 After implementation the user asks ChatGPT to review the diff and test results in the same conversation.
 
-## CPE-007 Chrome unavailable
+## CPE-007 Built-in browser cannot attach local bundle
 
-The Codex Chrome Extension cannot connect, while some other generic browser automation path is still available.
+The Codex built-in browser reaches ChatGPT Web, but local file attachment is unavailable or the file picker requires user confirmation. The Chrome Extension is also known not to have permission to upload the local archive automatically.
 
 ## CPE-008 Stale context after implementation
 
 ChatGPT's original uploaded context contains an older version of `runtime.go`; Codex materially changes that file before requesting follow-up review.
+
+## CPE-009 Existing Chrome session explicitly required
+
+The user explicitly asks to continue an already-authenticated ChatGPT conversation that is open in their normal Chrome profile and wants the Chrome session reused.
+
+## CPE-010 Default browser transport
+
+The user explicitly invokes `$chatgpt-plan-execute`, does not request an existing Chrome profile/session, and the handoff requires attaching the locally generated context archive.

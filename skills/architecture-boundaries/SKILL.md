@@ -3,7 +3,7 @@ name: architecture-boundaries
 description: Decide whether a technical dependency boundary is meaningful and derive Ports, Adapters, dependency inversion, explicit injection, and test seams from demonstrated architecture pressure. Use for DI, interfaces, package direction, infrastructure isolation, and protocol translation; not for primarily business invariants or active failure diagnosis.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "architecture"
 ---
 

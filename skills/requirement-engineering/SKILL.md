@@ -3,7 +3,7 @@ name: requirement-engineering
 description: Turn a feature request into a proportional Requirement Contract, reconcile it with existing requirements, capabilities, baselines, and released behavior, and stop for user decisions when product behavior conflicts. Do not force full ceremony on obvious safe edits.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "planning"
 ---
 

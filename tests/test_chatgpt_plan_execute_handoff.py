@@ -78,6 +78,9 @@ class HandoffScriptTest(unittest.TestCase):
         with zipfile.ZipFile(handoff / manifest["archive"]) as archive:
             self.assertEqual(["src/service.py"], archive.namelist())
 
+        session = json.loads((handoff / "session.json").read_text(encoding="utf-8"))
+        self.assertIsNone(session["browser_transport"])
+
     def test_secret_path_blocks_archive(self) -> None:
         (self.workspace / ".env.production").write_text(
             "SAFE_LOOKING=value\n",
@@ -150,6 +153,8 @@ class HandoffScriptTest(unittest.TestCase):
             "https://chatgpt.com/c/abc",
             "--actual-mode",
             "Pro",
+            "--browser-transport",
+            "codex-in-app",
         )
         self.assertEqual(2, recorded.returncode)
 
@@ -166,6 +171,8 @@ class HandoffScriptTest(unittest.TestCase):
             "https://example.com/c/abc",
             "--actual-mode",
             "Pro",
+            "--browser-transport",
+            "codex-in-app",
         )
         good = self.run_script(
             "record-session",
@@ -175,13 +182,56 @@ class HandoffScriptTest(unittest.TestCase):
             "https://chatgpt.com/c/abc",
             "--actual-mode",
             "Pro",
+            "--browser-transport",
+            "codex-in-app",
         )
 
         self.assertEqual(2, bad.returncode)
         self.assertEqual(0, good.returncode, good.stderr)
         session = json.loads((handoff / "session.json").read_text(encoding="utf-8"))
         self.assertEqual("https://chatgpt.com/c/abc", session["chat_url"])
+        self.assertEqual("codex-in-app", session["browser_transport"])
         self.assertEqual("submitted", session["status"])
+
+    def test_record_session_records_chrome_extension_transport(self) -> None:
+        (self.workspace / "src/service.py").write_text("VALUE = 1\n", encoding="utf-8")
+        created = self.create(["src/service.py"])
+        handoff = self.handoff_dir(created)
+
+        recorded = self.run_script(
+            "record-session",
+            "--handoff-dir",
+            str(handoff),
+            "--chat-url",
+            "https://chatgpt.com/c/existing",
+            "--actual-mode",
+            "Pro",
+            "--browser-transport",
+            "codex-chrome-extension",
+        )
+
+        self.assertEqual(0, recorded.returncode, recorded.stderr)
+        session = json.loads((handoff / "session.json").read_text(encoding="utf-8"))
+        self.assertEqual("codex-chrome-extension", session["browser_transport"])
+
+    def test_record_session_rejects_unknown_browser_transport(self) -> None:
+        (self.workspace / "src/service.py").write_text("VALUE = 1\n", encoding="utf-8")
+        created = self.create(["src/service.py"])
+        handoff = self.handoff_dir(created)
+
+        recorded = self.run_script(
+            "record-session",
+            "--handoff-dir",
+            str(handoff),
+            "--chat-url",
+            "https://chatgpt.com/c/abc",
+            "--actual-mode",
+            "Pro",
+            "--browser-transport",
+            "generic-browser",
+        )
+
+        self.assertEqual(2, recorded.returncode)
 
     def test_import_response_requires_exact_marker_pair(self) -> None:
         (self.workspace / "src/service.py").write_text("VALUE = 1\n", encoding="utf-8")

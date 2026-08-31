@@ -17,6 +17,7 @@ BEGIN_MARKER = "BEGIN_CHATGPT_PLAN_RESPONSE"
 END_MARKER = "END_CHATGPT_PLAN_RESPONSE"
 DEFAULT_MAX_FILE_BYTES = 1_000_000
 DEFAULT_MAX_TOTAL_BYTES = 5_000_000
+BROWSER_TRANSPORTS = ("codex-in-app", "codex-chrome-extension")
 
 EXCLUDED_DIRS = {
     ".git",
@@ -304,6 +305,7 @@ def create_handoff(args: argparse.Namespace) -> int:
         ) if ready else "blocked",
         "chat_url": None,
         "actual_mode": None,
+        "browser_transport": None,
         "turns": [],
     }
     write_json(root / "session.json", session)
@@ -357,9 +359,18 @@ def record_session(args: argparse.Namespace) -> int:
     path, session = load_session(handoff_dir)
     session["chat_url"] = args.chat_url
     session["actual_mode"] = args.actual_mode
+    session["browser_transport"] = args.browser_transport
     session["status"] = "submitted"
     write_json(path, session)
-    print(json.dumps({"chat_url": args.chat_url, "status": "submitted"}))
+    print(
+        json.dumps(
+            {
+                "chat_url": args.chat_url,
+                "browser_transport": args.browser_transport,
+                "status": "submitted",
+            }
+        )
+    )
     return 0
 
 
@@ -431,11 +442,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     record = sub.add_parser(
         "record-session",
-        help="record the ChatGPT conversation URL",
+        help="record the ChatGPT conversation URL and browser transport",
     )
     record.add_argument("--handoff-dir", required=True)
     record.add_argument("--chat-url", required=True)
     record.add_argument("--actual-mode", required=True)
+    record.add_argument(
+        "--browser-transport",
+        choices=BROWSER_TRANSPORTS,
+        required=True,
+    )
     record.set_defaults(func=record_session)
 
     imp = sub.add_parser(

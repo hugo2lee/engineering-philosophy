@@ -3,7 +3,7 @@ name: knowledge-compilation
 description: Evolve repository evidence into governed, discoverable project knowledge by classifying artifacts, reconciling canonical sources, deciding when to update an existing owner or create a Skill candidate, preserving provenance, validating redaction, and controlling candidate/active/retired states. Use when repository changes should update Agent knowledge; do not use for ordinary feature implementation, debugging, review, or release work alone.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "knowledge-governance"
 ---
 

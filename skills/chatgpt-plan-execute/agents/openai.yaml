@@ -1,6 +1,6 @@
 interface:
   display_name: "ChatGPT Plan Execute"
-  default_prompt: "Use $chatgpt-plan-execute to inspect this repository, send a minimal audited context bundle to ChatGPT Web for planning or review through the Codex Chrome Extension, reconcile the response with repository facts, then execute and verify locally."
+  default_prompt: "Use $chatgpt-plan-execute to inspect this repository, send a minimal audited context bundle to ChatGPT Web for planning or review through the Codex built-in browser by default or the Codex Chrome Extension when an existing Chrome session is required, reconcile the response with repository facts, then execute and verify locally."
   short_description: "Plan in ChatGPT Web, execute in Codex"
 policy:
   allow_implicit_invocation: false

@@ -3,7 +3,7 @@ name: test-driven-development
 description: Develop or change observable behavior through focused Red-Green-Refactor loops, vertical slices, regression tests, and release behavior baselines. Use when acceptance behavior is clear; not as the primary Skill for unclear requirements, active diagnosis, or code review.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "implementation"
 ---
 

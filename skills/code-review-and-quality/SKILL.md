@@ -3,7 +3,7 @@ name: code-review-and-quality
 description: Review a feature against its requirement contract, change plan, actual diff, release baselines, regressions, and verification evidence before merge or handoff. Do not use it as the primary Skill for live failure diagnosis or new implementation planning.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "quality"
 ---
 
