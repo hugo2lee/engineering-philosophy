@@ -3,7 +3,7 @@ name: chatgpt-plan-execute
 description: Orchestrate an explicit Codex workflow that inspects a local repository, packages a minimal auditable context bundle, delegates architecture reasoning and implementation planning or review to ChatGPT Web using the Codex built-in browser by default or the Codex Chrome Extension when an existing Chrome session is required, validates the returned plan against repository facts, then executes and verifies it locally. Use only when the user explicitly asks Codex to hand off repository context to ChatGPT Web; never upload secrets or infer consent from an ordinary coding request.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "workflow"
 ---
 

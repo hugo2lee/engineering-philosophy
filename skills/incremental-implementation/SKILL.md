@@ -3,7 +3,7 @@ name: incremental-implementation
 description: Deliver an approved change through small vertical slices that combine user-visible business value, the minimum architectural enabler, compatibility steps, and frequent verification. Use for migrations and cross-boundary features; not for unclear requirements or active failure diagnosis.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "implementation"
 ---
 

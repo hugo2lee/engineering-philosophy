@@ -3,7 +3,7 @@ name: systematic-debugging
 description: Investigate an actual test, build, runtime, integration, timeout, regression, or deployment failure with reproduction, evidence, falsifiable hypotheses, minimal fixes, regression verification, and baseline protection. Do not replace diagnosis with architecture redesign or compile-only confidence.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "debugging"
 ---
 

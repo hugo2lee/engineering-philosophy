@@ -2,9 +2,9 @@
 
 Evidence-driven software engineering philosophy for AI-assisted development.
 
-当前稳定版本：**v0.4.0 — Continuous Knowledge Compilation**
+当前稳定版本：**v0.5.0 — ChatGPT Plan Execute Workflow**
 
-v0.4.0 定义持续知识编译协议，并在完整验证、master CI 和发布门禁通过后作为稳定版本发布。
+v0.5.0 将 `chatgpt-plan-execute` 正式发布为第 13 个顶层 Skill，并把 ChatGPT Web handoff 的浏览器 transport 明确为：默认使用 Codex 内置浏览器，需要复用既有 Chrome profile/session 时再使用 Codex Chrome Extension。
 
 这是一个可独立触发、独立维护、独立评测的通用软件工程方法论 Skill Suite。它帮助 Codex、Cline、OpenClaw 以及其他兼容 Agent Skills 规范的 Agent，在需求澄清、仓库分析、架构演化、实现、评审和发布之间保持可追溯的工程判断。
 
@@ -125,7 +125,7 @@ npx skills@latest add hugo2lee/engineering-philosophy \
 `status: active` 的 Published Active Skill Set，以及安装器实际输出的 Installed
 Skill Set。候选 Skill 必须留在自动发现的 active path 之外，直到通过晋升门禁。
 
-`v0.4.0` 稳定版本发布了 12 个顶层 Skill；当前 `Unreleased` 工作树新增 `chatgpt-plan-execute`，因此 active registry set 为 13 个。任意 ref 的实际发布集合及数量均以 `skills/registry.yaml` 中的 active set 为准，验证、部署和安装不得硬编码固定 Skill 数量。仓库是发布和验证边界，不是一个必须整体触发的巨大 Skill；每个目录都可以独立调用。
+`v0.4.0` 稳定版本发布了 12 个顶层 Skill；`v0.5.0` 正式加入 `chatgpt-plan-execute`，因此当前 active registry set 为 13 个。任意 ref 的实际发布集合及数量均以 `skills/registry.yaml` 中的 active set 为准，验证、部署和安装不得硬编码固定 Skill 数量。仓库是发布和验证边界，不是一个必须整体触发的巨大 Skill；每个目录都可以独立调用。
 
 - `engineering-philosophy`：总纲、规则等级、全局/项目边界、生命周期和路由。显式入口，不作为所有请求的必经层。
 - `requirement-engineering`：Requirement Contract、现有需求/能力/发布行为对照、冲突分类和用户决策门。
@@ -211,7 +211,7 @@ Service 测试不能证明真实数据库 adapter；mock 的调用次数不能�
 
 ## Migrating from v0.2.x
 
-v0.3.0 只重命名两个 Skill；v0.4.0 在此基础上新增 `knowledge-compilation`，稳定版本总数为 12。当前 `Unreleased` 的 `chatgpt-plan-execute` 不改变这个历史迁移事实：
+v0.3.0 只重命名两个 Skill；v0.4.0 在此基础上新增 `knowledge-compilation`，稳定版本总数为 12。v0.5.0 再新增 `chatgpt-plan-execute`，但不改变这一历史迁移事实：
 
 | v0.2.x | v0.3.0 |
 | --- | --- |
@@ -258,13 +258,13 @@ GitHub Actions 会在 push 和 pull request 上自动运行 validation、ShellCh
 
 ## Releases
 
-v0.4.0 is the current stable release:
+v0.5.0 is the current stable release:
 
 ```text
-v0.4.0 — Continuous Knowledge Compilation
+v0.5.0 — ChatGPT Plan Execute Workflow
 ```
 
-Stable releases use annotated `vMAJOR.MINOR.PATCH` tags. A pushed stable tag runs the repository validation workflow first, and the GitHub Release is published only after validation succeeds. The released `v0.1.0`, `v0.2.0`, `v0.2.1`, and `v0.3.0` tags remain immutable.
+Stable releases use annotated `vMAJOR.MINOR.PATCH` tags. A pushed stable tag runs the repository validation workflow first, and the GitHub Release is published only after validation succeeds. The released `v0.1.0`, `v0.2.0`, `v0.2.1`, `v0.3.0`, and `v0.4.0` tags remain immutable.
 
 维护者发布后续版本时，可以在已通过 master CI 的最终 release commit 上执行：
 

@@ -3,7 +3,7 @@ name: ci-cd-and-automation
 description: Design or verify proportional build, test, baseline, artifact, release, deployment, and post-deployment gates with failure evidence and stop conditions. Do not use it for branch, commit, or tag history.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "delivery"
 ---
 

@@ -3,7 +3,7 @@ name: git-workflow-and-versioning
 description: Manage scoped branches, traceable commits, versions, tags, changelogs, and release history for evidence-driven feature delivery. Do not use it for CI pipeline design or code correctness review.
 license: AGPL-3.0-only
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   category: "delivery"
 ---
 

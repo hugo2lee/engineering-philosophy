@@ -3,79 +3,79 @@ schema_version: "1"
 skills:
   - name: engineering-philosophy
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: false
     minimum_eval_cases: 8
   - name: requirement-engineering
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 8
   - name: change-planning
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 8
   - name: architecture-boundaries
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 8
   - name: ddd-lite
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 8
   - name: incremental-implementation
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 5
   - name: test-driven-development
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 8
   - name: systematic-debugging
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 8
   - name: code-review-and-quality
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 5
   - name: git-workflow-and-versioning
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 5
   - name: ci-cd-and-automation
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 5
   - name: knowledge-compilation
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: true
     minimum_eval_cases: 8
   - name: chatgpt-plan-execute
     status: active
-    version: "0.4.0"
+    version: "0.5.0"
     scope: global
     allow_implicit_invocation: false
     minimum_eval_cases: 8
